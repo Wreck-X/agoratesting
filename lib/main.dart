@@ -1,12 +1,11 @@
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:agora_uikit/agora_uikit.dart';
 import 'package:flutter/material.dart';
 
 const appId = '36054cecfadf41d4b691234bf5db59d7';
 String channelName = 'test';
 String token =
-    '007eJxTYBC1aVC4d2zmvGOrK9adVln/u4fl/Grtw01XSjafcane5yqrwGBsZmBqkpyanJaYkmZimGKSZGZpaGRskpRmmpJkapli7jstIK0hkJHhxHdpRkYGCATxWRhKUotLGBgA184hXw==';
-int uid = 2; // uid of the local user
+    '007eJxTYDharqi4eNG1U8L7WfnDTXe4s7zdNoXrKufJbO/TmjmnDxYpMBibGZiaJKcmpyWmpJkYppgkmVkaGhmbJKWZpiSZWqaYm01MTWsIZGS437yKgREKQXwWhpLU4hIGBgAXxh9B';
+int uid = 1;
 
 void main() {
   runApp(MyApp());
@@ -22,14 +21,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final AgoraClient client = AgoraClient(
     agoraConnectionData: AgoraConnectionData(
-      appId: "36054cecfadf41d4b691234bf5db59d7",
-      channelName: "test",
+      appId: appId,
+      channelName: channelName,
       tempToken: token,
+      uid: uid,
     ),
-    enabledPermission: [
-      Permission.camera,
-      Permission.microphone,
-    ],
+    agoraChannelData: AgoraChannelData(
+      channelProfileType: ChannelProfileType.channelProfileLiveBroadcasting,
+      clientRoleType: ClientRoleType.clientRoleAudience,
+    ),
   );
 
   @override
@@ -42,15 +42,26 @@ class _MyAppState extends State<MyApp> {
     await client.initialize();
   }
 
+  //Build
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Agora Testing'),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: Stack(
             children: [
-              AgoraVideoViewer(client: client),
-              AgoraVideoButtons(client: client),
+              AgoraVideoViewer(
+                client: client,
+                layoutType: Layout.floating,
+                enableHostControls: true,
+              ),
+              AgoraVideoButtons(
+                client: client,
+              ),
             ],
           ),
         ),
